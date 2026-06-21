@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday! 🎂</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ═══ CUSTOMIZER DRAWER ══════════════════════ -->
+  <div class="drawer" id="customizer-drawer">
+    <div class="drawer-header">
+      <h3 class="drawer-title">Personalize Site ✨</h3>
+      <button class="drawer-close" id="drawer-close">×</button>
+    </div>
+    <div class="drawer-content">
+      <div class="form-group">
+        <label class="form-label">Color Theme</label>
+        <div class="theme-options">
+          <button class="theme-opt theme-rose" data-theme-val="rose">Rose</button>
+          <button class="theme-opt theme-cosmic" data-theme-val="cosmic">Cosmic</button>
+          <button class="theme-opt theme-emerald" data-theme-val="emerald">Emerald</button>
+          <button class="theme-opt theme-retro" data-theme-val="retro">Retro</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="input-name">Recipient Name</label>
+        <input type="text" id="input-name" class="form-control" placeholder="e.g. hannu">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="input-subtext">Celebration Message</label>
+        <input type="text" id="input-subtext" class="form-control">
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="drawer-btn save" id="btn-save-drawer">Save Changes ✨</button>
+      <button class="drawer-btn reset" id="btn-reset-drawer">Reset to Default</button>
+    </div>
+  </div>
+
+  <!-- ═══ CELEBRATION HERO ═══════════════════════ -->
+  <section class="celebration-hero">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-2"></div>
+    <div class="hero-glow glow-3"></div>
+
+    <div class="celebration-title-container">
+      <p class="celebration-eyebrow">A Magical Day Has Arrived</p>
+      <h1 class="celebration-giant-text">HAPPY BIRTHDAY HANNUUU</h1>
+      <h2 class="celebration-eyebrow" id="recipient-greeting"
+        style="color: var(--secondary); font-size: clamp(2.5rem, 6vw, 4rem); margin-top: 0.5rem;">HANNU!</h2>
+      <p class="celebration-subtitle" id="celebration-subtext">
+        Today the world became a brighter place — because you're in it. Wishing you the most magical, colorful, and
+        joy-filled birthday! 🌟
+      </p>
+    </div>
+
+    <!-- Innovative Make a Wish Form & Interactive Cake -->
+    <div class="wish-card-panel reveal">
+      <h3 class="section-title" style="font-size: 1.8rem; margin-bottom: 0.5rem;">Make A Secret <em>Wish</em></h3>
+      <p style="font-size: 0.9rem; color: rgba(255,248,240,0.6);">Close your eyes, make a silent wish, and blow out the
+        candles!</p>
+
+      <div class="wish-form">
+        <div class="candle-interactive-box">
+          <p style="font-size: 0.8rem; color: var(--accent); margin-bottom: 10px;">Click the flames to extinguish them,
+            or click "Blow Candles"</p>
+          <div class="cake" id="interactive-cake">
+            <div class="candles-container">
+              <div class="candle">
+                <div class="wick"></div>
+                <div class="flame" data-candle="1"></div>
+              </div>
+              <div class="candle">
+                <div class="wick"></div>
+                <div class="flame" data-candle="2"></div>
+              </div>
+              <div class="candle">
+                <div class="wick"></div>
+                <div class="flame" data-candle="3"></div>
+              </div>
+              <div class="candle">
+                <div class="wick"></div>
+                <div class="flame" data-candle="4"></div>
+              </div>
+              <div class="candle">
+                <div class="wick"></div>
+                <div class="flame" data-candle="5"></div>
+              </div>
+            </div>
+            <div class="layer layer-top"></div>
+            <div class="layer layer-middle"></div>
+            <div class="layer layer-bottom"></div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btn-cast-wish" style="margin-top: 0;">
+          <span>✨</span> Make a Wish & Blow Candles
+        </button>
+      </div>
+    </div>
+
+    <a href="gallery.html" class="btn-primary" style="margin-top: 4rem; max-width: 280px; z-index: 10;">
+      <span>📸</span> Walk down Memory Lane
+    </a>
+  </section>
+
+  <!-- Cork Board Wishes Wall -->
+  <section class="wishes-section">
+    <p class="section-label reveal">Sticky Wall</p>
+    <h2 class="section-title reveal">Shared <em>Wishes Board</em> 📌</h2>
+    <div class="divider reveal"></div>
+    <p class="reveal" style="text-align: center; color: rgba(255,248,240,0.6); max-width: 500px; margin: 0 auto;">
+      A collection of beautiful messages pinned by those who love you. Your secret wish will also pin here!
+    </p>
+
+    <div class="wishes-grid reveal" id="wish-board-container">
+      <!-- Sticky notes rendered by JS -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-heart">🎂</div>
+    <p class="footer-text">Made with love, just for you.</p>
+  </footer>
+
+  <!-- Floating balloons -->
+  <div class="balloons" id="balloons"
+    style="position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1;"></div>
+
+  <!-- Shared Javascript -->
+  <script src="shared.js"></script>
+  <script>
+    // Config elements binding
+    const txtName = document.getElementById("recipient-greeting");
+    const txtSub = document.getElementById("celebration-subtext");
+    const inputName = document.getElementById("input-name");
+    const inputSubtext = document.getElementById("input-subtext");
+    const themeOpts = document.querySelectorAll(".theme-opt");
+    const wishBoard = document.getElementById("wish-board-container");
+
+    function updatePageContent() {
+      txtName.textContent = `${activeConfig.name.toUpperCase()}!`;
+      txtSub.textContent = activeConfig.heroSubtext;
+
+      // Update form values in drawer
+      inputName.value = activeConfig.name;
+      inputSubtext.value = activeConfig.heroSubtext;
+
+      // Theme toggle indicators
+      themeOpts.forEach(opt => {
+        opt.classList.toggle("selected", opt.dataset.themeVal === activeConfig.theme);
+      });
+
+      // Render Pinned Sticky Notes
+      renderWishBoard();
+    }
+
+    function renderWishBoard() {
+      wishBoard.innerHTML = "";
+      const colors = ["pink", "gold", "blue", "purple", "green"];
+
+      activeConfig.wishes.forEach((w, idx) => {
+        const rot = ((idx * 31) % 9) - 4; // rotate between -4 and 4 deg
+        const color = w.color || colors[idx % colors.length];
+        const icon = w.icon || "🎂";
+        
+        let colorClass = '';
+        let colorStyle = `--rot: ${rot}deg`;
+        
+        if (color && color.startsWith('#')) {
+          // Keep image background, just ensure white text
+          colorStyle += `; color: #ffffff;`;
+        } else {
+          // Color class name
+          colorClass = `color-${color}`;
+        }
+
+        // Assign wp1 to first card, wp2 to second card, wp3 to Mom card, wp4 to GrandPa&GrandMa card, wp5 to Arhaan card, wp6 to Tulya card, wp7 to Atta card (by index)
+        if (idx === 0) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 1) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp2.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 2) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp3.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 3) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp4.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 4) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp5.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 5) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp6.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff;`;
+        } else if (idx === 6) {
+          colorStyle += `; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp7.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #ffffff; grid-column: 2 / 3;`;
+        }
+
+        wishBoard.innerHTML += `
+          <div class="sticky-note ${colorClass}" style="${colorStyle}">
+            <div class="sticky-icon">${icon}</div>
+            <p class="sticky-text">${w.text}</p>
+            <p class="sticky-author">${w.author}</p>
+          </div>
+        `;
+      });
+
+      // Post-render: ensure the first two cards and last Tulya card have the exact images
+      setTimeout(() => {
+        const notes = wishBoard.querySelectorAll('.sticky-note');
+        if (notes[0]) {
+          notes[0].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp1.jpg')";
+          notes[0].style.backgroundSize = 'cover';
+          notes[0].style.backgroundPosition = 'center';
+        }
+        if (notes[1]) {
+          notes[1].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp2.jpg')";
+          notes[1].style.backgroundSize = 'cover';
+          notes[1].style.backgroundPosition = 'center';
+        }
+        if (notes[2]) {
+          notes[2].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp3.jpg')";
+          notes[2].style.backgroundSize = 'cover';
+          notes[2].style.backgroundPosition = 'center';
+        }
+        if (notes[3]) {
+          notes[3].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp4.jpg')";
+          notes[3].style.backgroundSize = 'cover';
+          notes[3].style.backgroundPosition = 'center';
+        }
+        if (notes[4]) {
+          notes[4].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp5.jpg')";
+          notes[4].style.backgroundSize = 'cover';
+          notes[4].style.backgroundPosition = 'center';
+        }
+        if (notes[5]) {
+          notes[5].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp6.jpg')";
+          notes[5].style.backgroundSize = 'cover';
+          notes[5].style.backgroundPosition = 'center';
+        }
+        if (notes[6]) {
+          notes[6].style.background = "linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('wp7.jpg')";
+          notes[6].style.backgroundSize = 'cover';
+          notes[6].style.backgroundPosition = 'center';
+          notes[6].style.gridColumn = '2 / 3';
+        }
+      }, 50);
+    }
+
+    // Interactive Candle Blowing logic
+    const flames = document.querySelectorAll(".flame");
+    let blownCount = 0;
+
+    flames.forEach(flame => {
+      flame.addEventListener("click", () => {
+        if (!flame.classList.contains("blown")) {
+          playBlowSound();
+          flame.classList.add("blown");
+          blownCount++;
+
+          // Emit small puff smoke particle
+          createSmokePuff(flame);
+
+          if (blownCount === flames.length) {
+            triggerFullBlowCelebration();
+          }
+        }
+      });
+    });
+
+    function createSmokePuff(element) {
+      const rect = element.getBoundingClientRect();
+      const smoke = document.createElement("div");
+      smoke.textContent = "💨";
+      smoke.style.cssText = `
+        position: fixed;
+        left: ${rect.left + rect.width / 2}px;
+        top: ${rect.top}px;
+        font-size: 1.2rem;
+        pointer-events: none;
+        z-index: 1000;
+        transition: transform 0.6s ease, opacity 0.6s ease;
+      `;
+      document.body.appendChild(smoke);
+      setTimeout(() => {
+        smoke.style.transform = "translateY(-35px) scale(1.4)";
+        smoke.style.opacity = 0;
+      }, 20);
+      setTimeout(() => smoke.remove(), 600);
+    }
+
+    function triggerFullBlowCelebration() {
+      playSuccessChime();
+      launchConfetti();
+      // Multiple fireworks bursts
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          if (window.createFirework) {
+            window.createFirework(
+              Math.random() * window.innerWidth,
+              window.innerHeight * 0.2 + Math.random() * window.innerHeight * 0.4
+            );
+          }
+        }, i * 350);
+      }
+    }
+
+    // Make a Wish shooting star logic
+    const btnCastWish = document.getElementById("btn-cast-wish");
+
+    btnCastWish.addEventListener("click", () => {
+      const author = activeConfig.name || "hannu";
+      const wishText = "My secret birthday wish... 🤫✨";
+
+      // First, blow out all flames if not blown yet
+      flames.forEach(f => {
+        if (!f.classList.contains("blown")) {
+          f.classList.add("blown");
+        }
+      });
+      blownCount = flames.length;
+      playBlowSound();
+
+      // Launch shooting star particle ascending from the cake
+      createShootingStar(wishText);
+
+      // Add to config local state & wish board
+      setTimeout(() => {
+        activeConfig.wishes.unshift({
+          icon: "🌟",
+          text: wishText,
+          author: `-- ${author}`,
+          color: ["pink", "gold", "blue", "purple", "green"][Math.floor(Math.random() * 5)]
+        });
+
+        saveConfig();
+        renderWishBoard();
+        triggerFullBlowCelebration();
+
+        // Relight candles after 4 seconds
+        setTimeout(() => {
+          flames.forEach(f => f.classList.remove("blown"));
+          blownCount = 0;
+        }, 4000);
+      }, 1200);
+    });
+
+    function createShootingStar(text) {
+      const cakeEl = document.getElementById("interactive-cake");
+      const rect = cakeEl.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top;
+
+      // Create glowing star element
+      const star = document.createElement("div");
+      star.className = "glow-star-particle";
+      star.textContent = "🌟";
+      // Random target side drift
+      const targetTx = (Math.random() - 0.5) * 400;
+      star.style.setProperty("--star-tx", `${targetTx}px`);
+      star.style.left = `${originX}px`;
+      star.style.top = `${originY}px`;
+
+      document.body.appendChild(star);
+
+      // Remove star element when animation finishes
+      star.addEventListener("animationend", () => {
+        star.remove();
+      });
+    }
+
+    // Balloon floating decorations
+    const balloonEmojis = ["🎈", "🎈", "🎉", "🎊", "💛", "💖", "✨", "🌸"];
+    const balloonCont = document.getElementById("balloons");
+    for (let i = 0; i < 12; i++) {
+      const b = document.createElement("div");
+      b.className = "balloon";
+      b.textContent = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+      b.style.cssText = `
+        position: absolute;
+        bottom: -100px;
+        left: ${Math.random() * 100}%;
+        animation: riseUp linear infinite;
+        animation-duration: ${7 + Math.random() * 8}s;
+        animation-delay: ${Math.random() * 6}s;
+        font-size: ${1.5 + Math.random() * 1.5}rem;
+        opacity: .6;
+      `;
+      balloonCont.appendChild(b);
+    }
+
+    // ─── LIVE DRAWER LOGIC ───
+    const drawer = document.getElementById("customizer-drawer");
+
+    document.getElementById("drawer-close").addEventListener("click", () => {
+      drawer.classList.remove("open");
+    });
+
+    themeOpts.forEach(opt => {
+      opt.addEventListener("click", () => {
+        themeOpts.forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        activeConfig.theme = opt.dataset.themeVal;
+        applyTheme(activeConfig.theme);
+      });
+    });
+
+    document.getElementById("btn-save-drawer").addEventListener("click", () => {
+      activeConfig.name = inputName.value.trim() || activeConfig.name;
+      activeConfig.heroSubtext = inputSubtext.value.trim() || activeConfig.heroSubtext;
+
+      saveConfig();
+      updatePageContent();
+      drawer.classList.remove("open");
+      playSuccessChime();
+      launchConfetti();
+      alert("Settings saved successfully!");
+    });
+
+    document.getElementById("btn-reset-drawer").addEventListener("click", () => {
+      if (confirm("Reset layout configs to default?")) {
+        localStorage.removeItem('bday_config');
+        activeConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        applyTheme(activeConfig.theme);
+        updatePageContent();
+        drawer.classList.remove("open");
+        playSuccessChime();
+      }
+    });
+
+    // Scroll Reveal trigger
+    const revEls = document.querySelectorAll(".reveal");
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: .1 });
+    revEls.forEach(el => obs.observe(el));
+
+    // Page Load setup
+    updatePageContent();
+  </script>
+</body>
+
+</html>

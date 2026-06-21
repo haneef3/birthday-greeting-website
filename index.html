@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter the Vault 🔐</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Main Split Screen Layout -->
+  <main class="split-screen">
+    
+    <!-- Left Panel: Large Visual Storytelling -->
+    <div class="split-left">
+      <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1000&auto=format&fit=crop&q=80" alt="Birthday Celebration Cover">
+      <div class="split-left-overlay"></div>
+      <div class="split-left-photo">
+        <img src="pic4.jpg" alt="Birthday photo">
+      </div>
+      <div class="split-left-content">
+        <span class="section-label" style="text-align: left; margin-bottom: 0.5rem; display: block; color: var(--secondary);">Top Secret 🔐</span>
+        <h1 class="split-left-title">A Special Surprise Awaits...</h1>
+        <p class="split-left-subtitle">Are you ready to unlock it?</p>
+      </div>
+    </div>
+
+    <!-- Right Panel: Passcode Entry Card -->
+    <div class="split-right">
+      <div class="hero-glow glow-1"></div>
+      <div class="hero-glow glow-2"></div>
+      
+      <div class="passcode-card">
+        <div class="passcode-title">Unlock Celebration 🎂</div>
+        <p class="passcode-subtitle">Enter the 6-digit passcode to open your birthday surprise!</p>
+        
+        <!-- 6-digit Inputs -->
+        <div class="passcode-inputs">
+          <input type="text" maxlength="1" class="digit-input" data-index="0" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autofocus>
+          <input type="text" maxlength="1" class="digit-input" data-index="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          <input type="text" maxlength="1" class="digit-input" data-index="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          <input type="text" maxlength="1" class="digit-input" data-index="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          <input type="text" maxlength="1" class="digit-input" data-index="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+          <input type="text" maxlength="1" class="digit-input" data-index="5" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        </div>
+
+        <div id="error-msg" class="error-message">Incorrect passcode. Try again!</div>
+
+        <button class="btn-primary" id="btn-unlock">
+          <span>🔓</span> Unlock Gift
+        </button>
+        <button class="btn-secondary" id="btn-hint">
+          <span>💡</span> Reveal Passcode Clue
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Large Format Passcode Display Overlay (Requirement) -->
+  <div class="large-passcode-overlay" id="large-passcode-overlay">
+    <div class="large-passcode-content">
+      <div class="large-passcode-lbl" id="overlay-lbl">Secret Passcode</div>
+      <div class="large-passcode-digits" id="overlay-digits">110615</div>
+      <p class="large-passcode-desc" id="overlay-desc">Use this passcode code to unlock your birthday surprise vault.</p>
+      <button class="large-passcode-close" id="btn-close-overlay">Got It!</button>
+    </div>
+  </div>
+
+  <!-- Shared JavaScript Libraries -->
+  <script src="shared.js"></script>
+  <script>
+    const correctCode = "110615";
+    const inputs = document.querySelectorAll(".digit-input");
+    const errorMsg = document.getElementById("error-msg");
+    const btnUnlock = document.getElementById("btn-unlock");
+    const btnHint = document.getElementById("btn-hint");
+    const overlay = document.getElementById("large-passcode-overlay");
+    const overlayLbl = document.getElementById("overlay-lbl");
+    const overlayDigits = document.getElementById("overlay-digits");
+    const overlayDesc = document.getElementById("overlay-desc");
+    const btnCloseOverlay = document.getElementById("btn-close-overlay");
+
+    // Recipient customization lookup
+    if (activeConfig && activeConfig.name) {
+      document.querySelector(".split-left-subtitle").textContent = `Are you ready, ${activeConfig.name}?`;
+    }
+
+    // Auto-focusing next/previous inputs
+    inputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        const value = e.target.value;
+        // Strip non-numbers
+        e.target.value = value.replace(/[^0-9]/g, "");
+        
+        if (e.target.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+        
+        // Auto validate if all inputs are full
+        checkAutoValidate();
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && e.target.value.length === 0 && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    function getEnteredPasscode() {
+      let code = "";
+      inputs.forEach(input => code += input.value);
+      return code;
+    }
+
+    function checkAutoValidate() {
+      const enteredCode = getEnteredPasscode();
+      if (enteredCode.length === 6) {
+        verifyPasscode(enteredCode);
+      }
+    }
+
+    function verifyPasscode(code) {
+      if (code === correctCode) {
+        // Success: display passcode on screen in a large glowing format before proceeding
+        errorMsg.classList.remove("show");
+        playSuccessChime();
+        if (window.createFirework) {
+          window.createFirework(window.innerWidth / 2, window.innerHeight / 2);
+        }
+
+        // Show passcode on screen in large format before going to 2nd file
+        overlayLbl.textContent = "Passcode Verified! 🔓";
+        overlayDigits.textContent = correctCode;
+        overlayDesc.textContent = "Unlocking the birthday surprise... Preparing the party cake!";
+        // Hide close button so they don't click it during transition
+        btnCloseOverlay.style.display = "none";
+        overlay.classList.add("active");
+
+        // Confetti burst
+        if (typeof launchConfetti === "function") {
+          launchConfetti();
+        }
+
+        // Redirect to 2nd page (cake.html) after a short delay
+        setTimeout(() => {
+          window.location.href = "cake.html";
+        }, 2500);
+
+      } else {
+        // Error handling
+        errorMsg.classList.add("show");
+        inputs.forEach(input => {
+          input.value = "";
+          input.style.borderColor = "var(--primary)";
+        });
+        inputs[0].focus();
+        setTimeout(() => {
+          inputs.forEach(input => input.style.borderColor = "var(--border-glass)");
+        }, 800);
+      }
+    }
+
+    // Manual Unlock button click
+    btnUnlock.addEventListener("click", () => {
+      const code = getEnteredPasscode();
+      if (code.length < 6) {
+        errorMsg.textContent = "Please fill in all 6 digits!";
+        errorMsg.classList.add("show");
+        inputs[code.length].focus();
+      } else {
+        verifyPasscode(code);
+      }
+    });
+
+    // Reveal passcode clue button click (displays passcode on screen in large format)
+    btnHint.addEventListener("click", () => {
+      initAudio();
+      overlayLbl.textContent = "Passcode Clue 💡";
+      overlayDigits.textContent = correctCode;
+      overlayDesc.textContent = "Type this code in the boxes to unlock the special birthday surprise.";
+      btnCloseOverlay.style.display = "inline-block";
+      overlay.classList.add("active");
+      playSuccessChime();
+    });
+
+    btnCloseOverlay.addEventListener("click", () => {
+      overlay.classList.remove("active");
+      inputs[0].focus();
+    });
+  </script>
+</body>
+</html>

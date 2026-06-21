@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Lane & Music 📸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ═══ CUSTOMIZER DRAWER ══════════════════════ -->
+  <div class="drawer" id="customizer-drawer">
+    <div class="drawer-header">
+      <h3 class="drawer-title">Personalize Site ✨</h3>
+      <button class="drawer-close" id="drawer-close">×</button>
+    </div>
+    <div class="drawer-content">
+      <div class="form-group">
+        <label class="form-label">Color Theme</label>
+        <div class="theme-options">
+          <button class="theme-opt theme-rose" data-theme-val="rose">Rose</button>
+          <button class="theme-opt theme-cosmic" data-theme-val="cosmic">Cosmic</button>
+          <button class="theme-opt theme-emerald" data-theme-val="emerald">Emerald</button>
+          <button class="theme-opt theme-retro" data-theme-val="retro">Retro</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="input-photo">Add Polaroid Photo</label>
+        <input type="file" id="input-photo" class="form-control" accept="image/*">
+        <p style="font-size:0.7rem;color:rgba(255,248,240,0.4);margin-top:2px;">Inserts a new photo at the beginning of the slider.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="input-video">Upload Video Message 🎥</label>
+        <input type="file" id="input-video" class="form-control" accept="video/*">
+        <p style="font-size:0.7rem;color:rgba(255,248,240,0.4);margin-top:2px;">Select an MP4/WebM video file to replace the current birthday video.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="input-music-title">Music Track Title</label>
+        <input type="text" id="input-music-title" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="input-music-artist">Music Track Subtext</label>
+        <input type="text" id="input-music-artist" class="form-control">
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="drawer-btn save" id="btn-save-drawer">Save Changes ✨</button>
+      <button class="drawer-btn reset" id="btn-reset-drawer">Reset to Default</button>
+    </div>
+  </div>
+
+  <!-- ═══ GALLERY HERO SECTION ════════════════════ -->
+  <section class="music-section" style="padding-bottom: 2rem;">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-2"></div>
+    
+    <p class="section-label reveal">Memory Lane</p>
+    <h2 class="section-title reveal">Through the <em>Years</em> 📸</h2>
+    <div class="divider reveal"></div>
+    <p class="reveal" style="color: rgba(255,248,240,0.6); max-width: 500px; margin: 0 auto; text-align: center;">
+      Click the arrows or swipe to scroll through photos one after another.
+    </p>
+
+    <!-- Horizontal Polaroid Carousel Slider -->
+    <div class="gallery-container reveal">
+      <button class="slider-arrow prev" id="slider-prev" aria-label="Previous Photo">❮</button>
+      <button class="slider-arrow next" id="slider-next" aria-label="Next Photo">❯</button>
+      
+      <div class="gallery-slider-wrapper">
+        <div class="gallery-slides" id="gallery-slides-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="slider-dots" id="slider-dots-container">
+        <!-- Dots populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MUSIC PLAYER SECTION ════════════════════ -->
+  <section class="music-section" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <p class="section-label reveal">Music Box</p>
+    <h2 class="section-title reveal">Hit <em>Play</em> 🎵</h2>
+    
+    <div class="music-player reveal">
+      <div class="music-cover" id="music-cover">🎂</div>
+      <div class="music-info">
+        <div class="music-title" id="music-title">Happy Birthday</div>
+        <div class="music-sub" id="music-artist">Synthesized Chimes</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="music-controls">
+        <button class="ctrl-btn" id="prev-btn" title="Restart">⏮</button>
+        <button class="ctrl-btn main" id="play-btn" title="Play">▶</button>
+        <button class="ctrl-btn" id="next-btn" title="Random Note">⏭</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIMELINE SECTION ════════════════════════ -->
+  <section class="timeline-section">
+    <p class="section-label reveal">Our Story</p>
+    <h2 class="section-title reveal">Your <em>Journey</em> So Far 💫</h2>
+    <div class="divider reveal"></div>
+
+    <div class="timeline reveal" id="timeline-container">
+      <!-- Milestones populated by JS -->
+    </div>
+  </section>
+
+  <!-- Navigation button to watch secret video page -->
+  <div style="text-align: center; margin-bottom: 5rem; position: relative; z-index: 10;">
+    <a href="video.html" class="btn-primary" style="max-width: 320px;">
+      <span>🎥</span> Watch Secret Video Message
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-heart">🎂</div>
+    <p class="footer-text">Happy Birthday, always & forever.</p>
+  </footer>
+
+  <!-- Shared JavaScript Utilities -->
+  <script src="shared.js"></script>
+  <script>
+    // Elements references
+    const slidesContainer = document.getElementById("gallery-slides-container");
+    const dotsContainer = document.getElementById("slider-dots-container");
+    const timelineContainer = document.getElementById("timeline-container");
+    
+    const txtMusicTitle = document.getElementById("music-title");
+    const txtMusicArtist = document.getElementById("music-artist");
+    
+    const inputMusicTitle = document.getElementById("input-music-title");
+    const inputMusicArtist = document.getElementById("input-music-artist");
+    const themeOpts = document.querySelectorAll(".theme-opt");
+    
+    let activeSlideIndex = 0;
+    let totalSlides = 0;
+
+    function renderGalleryAndTimeline() {
+      // 1. Render Gallery Slides
+      slidesContainer.innerHTML = "";
+      dotsContainer.innerHTML = "";
+      
+      const photoCaptions = [
+        "Sweet smile ✨",
+        "Celebration time!🧸",
+        "Moments like this 💫",
+        "Our Little Queen 👑",
+        "Unwrapping joy 🎁",  
+        "Cheers to years! 🥂", 
+        "Pure happiness 💖",
+        "Sunshine Vibes☀️",
+        "🌈 Little Sparkle" 
+      ];
+      
+      const photos = activeConfig.photos || [];
+      totalSlides = photos.length;
+      
+      photos.forEach((src, index) => {
+        const rotation = ((index * 17) % 9) - 4; // between -4 and 4 deg
+        const caption = photoCaptions[index % photoCaptions.length] || `Memory #${index + 1}`;
+        
+        // Slide item
+        const slideItem = document.createElement("div");
+        slideItem.className = "gallery-slide-item";
+        slideItem.innerHTML = `
+          <div class="polaroid-card" style="--rot: ${rotation}deg">
+            <img src="${src}" alt="Memory ${index + 1}">
+            <div class="polaroid-caption">${caption}</div>
+          </div>
+        `;
+        slidesContainer.appendChild(slideItem);
+        
+        // Dot indicator
+        const dot = document.createElement("button");
+        dot.className = `slider-dot ${index === activeSlideIndex ? 'active' : ''}`;
+        dot.addEventListener("click", () => {
+          goToSlide(index);
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      updateSlideOffset();
+
+      // 2. Render Timeline milestones
+      timelineContainer.innerHTML = "";
+      activeConfig.timeline.forEach((item, index) => {
+        timelineContainer.innerHTML += `
+          <div class="tl-item">
+            <div class="tl-dot">${item.icon || '⭐'}</div>
+            <div class="tl-content">
+              <div class="tl-year">${item.year}</div>
+              <div class="tl-title">${item.title}</div>
+              <div class="tl-desc">${item.desc}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      // 3. Render Music Details
+      txtMusicTitle.textContent = activeConfig.musicTitle;
+      txtMusicArtist.textContent = activeConfig.musicArtist;
+
+      // Drawer inputs setup
+      inputMusicTitle.value = activeConfig.musicTitle;
+      inputMusicArtist.value = activeConfig.musicArtist;
+      
+      themeOpts.forEach(opt => {
+        opt.classList.toggle("selected", opt.dataset.themeVal === activeConfig.theme);
+      });
+
+      // 4. Render Video Source
+      const videoEl = document.getElementById("bday-video");
+      if (videoEl && !videoEl.src) {
+        videoEl.src = activeConfig.videoData || "birthday-video.mp4";
+      }
+    }
+
+    // Carousel Slider slide logic
+    const btnPrev = document.getElementById("slider-prev");
+    const btnNext = document.getElementById("slider-next");
+
+    btnPrev.addEventListener("click", () => {
+      let index = activeSlideIndex - 1;
+      if (index < 0) index = totalSlides - 1;
+      goToSlide(index);
+    });
+
+    btnNext.addEventListener("click", () => {
+      let index = activeSlideIndex + 1;
+      if (index >= totalSlides) index = 0;
+      goToSlide(index);
+    });
+
+    function goToSlide(index) {
+      activeSlideIndex = index;
+      updateSlideOffset();
+      
+      // Update dots classes
+      const dots = dotsContainer.querySelectorAll(".slider-dot");
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle("active", idx === index);
+      });
+    }
+
+    function updateSlideOffset() {
+      slidesContainer.style.transform = `translateX(-${activeSlideIndex * 100}%)`;
+    }
+
+    /* ─── WEB AUDIO MUSIC SYNTHESIZER ─── */
+    let playingSynth = false;
+    let synthTimer = null;
+    let currentNoteIndex = 0;
+    const beatDuration = 0.55;
+
+    const playBtn = document.getElementById("play-btn");
+    const cover = document.getElementById("music-cover");
+    const fill = document.getElementById("progress-fill");
+
+    const NOTES = {
+      C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, Bb4: 466.16,
+      C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00, C6: 1046.50
+    };
+
+    const TUNE = [
+      { note: 'C4', dur: 0.7 }, { note: 'C4', dur: 0.3 }, { note: 'D4', dur: 1 }, { note: 'C4', dur: 1 }, { note: 'F4', dur: 1 }, { note: 'E4', dur: 2 },
+      { note: 'C4', dur: 0.7 }, { note: 'C4', dur: 0.3 }, { note: 'D4', dur: 1 }, { note: 'C4', dur: 1 }, { note: 'G4', dur: 1 }, { note: 'F4', dur: 2 },
+      { note: 'C4', dur: 0.7 }, { note: 'C4', dur: 0.3 }, { note: 'C5', dur: 1 }, { note: 'A4', dur: 1 }, { note: 'F4', dur: 1 }, { note: 'E4', dur: 1 }, { note: 'D4', dur: 2 },
+      { note: 'Bb4', dur: 0.7 }, { note: 'Bb4', dur: 0.3 }, { note: 'A4', dur: 1 }, { note: 'F4', dur: 1 }, { note: 'G4', dur: 1 }, { note: 'F4', dur: 2 }
+    ];
+
+    function playChime(freq, startTime, duration) {
+      if (!audioCtx) return;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(freq, startTime);
+      
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(freq * 2, startTime); // overtone
+      
+      gainNode.gain.setValueAtTime(0, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.12, startTime + 0.015);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration - 0.02);
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, startTime);
+      
+      osc1.connect(gainNode);
+      osc2.connect(gainNode);
+      gainNode.connect(filter);
+      filter.connect(audioCtx.destination);
+      
+      osc1.start(startTime);
+      osc2.start(startTime);
+      osc1.stop(startTime + duration);
+      osc2.stop(startTime + duration);
+    }
+
+    function playNextNote() {
+      if (!playingSynth) return;
+      
+      const item = TUNE[currentNoteIndex];
+      const freq = NOTES[item.note];
+      const dur = item.dur * beatDuration;
+      
+      playChime(freq, audioCtx.currentTime, dur);
+      
+      const progressPercent = (currentNoteIndex / TUNE.length) * 100;
+      fill.style.width = progressPercent + "%";
+      
+      currentNoteIndex = (currentNoteIndex + 1) % TUNE.length;
+      synthTimer = setTimeout(playNextNote, dur * 1000);
+    }
+
+    playBtn.addEventListener("click", () => {
+      initAudio();
+      playingSynth = !playingSynth;
+      playBtn.textContent = playingSynth ? "⏸" : "▶";
+      cover.classList.toggle("playing", playingSynth);
+      
+      if (playingSynth) {
+        playNextNote();
+      } else {
+        clearTimeout(synthTimer);
+      }
+    });
+
+    document.getElementById("prev-btn").addEventListener("click", () => {
+      currentNoteIndex = 0;
+      fill.style.width = "0%";
+      if (playingSynth) {
+        clearTimeout(synthTimer);
+        playNextNote();
+      }
+    });
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      initAudio();
+      const freqKeys = Object.keys(NOTES);
+      const randomFreq = NOTES[freqKeys[Math.floor(Math.random() * freqKeys.length)]];
+      playChime(randomFreq, audioCtx.currentTime, 0.6);
+      if (typeof launchConfetti === "function") {
+        launchConfetti();
+      }
+    });
+
+    // ─── LIVE DRAWER LOGIC ───
+    const drawer = document.getElementById("customizer-drawer");
+    
+    document.getElementById("drawer-close").addEventListener("click", () => {
+      drawer.classList.remove("open");
+    });
+
+    themeOpts.forEach(opt => {
+      opt.addEventListener("click", () => {
+        themeOpts.forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        activeConfig.theme = opt.dataset.themeVal;
+        applyTheme(activeConfig.theme);
+      });
+    });
+
+    // Handle photo uploading
+    document.getElementById("input-photo").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        // Append photo to end of array to maintain 1 -> 2 ordering
+        activeConfig.photos.push(evt.target.result);
+        if (activeConfig.photos.length > 8) {
+          activeConfig.photos = activeConfig.photos.slice(-8);
+        }
+        saveConfig();
+        renderGalleryAndTimeline();
+        
+        // Auto navigate to the newly added slide at the end
+        goToSlide(activeConfig.photos.length - 1);
+        
+        playSuccessChime();
+        alert("Photo added successfully!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Handle video uploading
+    document.getElementById("input-video").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const videoElement = document.getElementById("bday-video");
+      const objectURL = URL.createObjectURL(file);
+      if (videoElement) {
+        videoElement.src = objectURL;
+      }
+      
+      // Save data URL to activeConfig if it is small enough (under 3.5MB) to avoid QuotaExceededError
+      if (file.size < 3.5 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          activeConfig.videoData = evt.target.result;
+          saveConfig();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Too large for localstorage, clear previously stored data to avoid conflicts
+        delete activeConfig.videoData;
+        saveConfig();
+        alert("Video loaded successfully! Note: Since this file is large, it will play now in this session, but won't be saved permanently to browser storage (max storage limit is 5MB). To make a video permanent, place an MP4 named 'birthday-video.mp4' in your folder!");
+      }
+      playSuccessChime();
+    });
+
+    document.getElementById("btn-save-drawer").addEventListener("click", () => {
+      activeConfig.musicTitle = inputMusicTitle.value.trim() || activeConfig.musicTitle;
+      activeConfig.musicArtist = inputMusicArtist.value.trim() || activeConfig.musicArtist;
+      
+      saveConfig();
+      renderGalleryAndTimeline();
+      drawer.classList.remove("open");
+      playSuccessChime();
+      alert("Settings saved successfully!");
+    });
+
+    document.getElementById("btn-reset-drawer").addEventListener("click", () => {
+      if (confirm("Reset layout configs to default?")) {
+        localStorage.removeItem('bday_config');
+        activeConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        applyTheme(activeConfig.theme);
+        
+        // Reset video element source
+        const videoElement = document.getElementById("bday-video");
+        if (videoElement) {
+          videoElement.src = "birthday-video.mp4";
+        }
+        
+        renderGalleryAndTimeline();
+        drawer.classList.remove("open");
+        playSuccessChime();
+      }
+    });
+
+    // Scroll reveal triggers
+    const revEls = document.querySelectorAll(".reveal");
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: .1 });
+    revEls.forEach(el => obs.observe(el));
+
+    // Load initial layout elements
+    renderGalleryAndTimeline();
+  </script>
+</body>
+</html>

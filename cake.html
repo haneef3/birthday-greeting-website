@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baking the Surprise... 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="loading-container">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-3"></div>
+
+    <!-- Small SVG Cake illustration -->
+    <div class="loading-cake">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Plate -->
+        <ellipse cx="100" cy="160" rx="75" ry="12" fill="var(--mid)" stroke="var(--border-glass)" stroke-width="2"/>
+        
+        <!-- Bottom Layer (Chocolate) -->
+        <path d="M40 120 C 40 120, 100 130, 160 120 L 160 150 C 160 150, 100 160, 40 150 Z" fill="#8d5b4c" />
+        <path d="M40 120 C 70 128, 130 128, 160 120" fill="none" stroke="var(--primary)" stroke-width="4"/>
+        
+        <!-- Middle Layer (Vanilla/Cream) -->
+        <path d="M48 90 C 48 90, 100 98, 152 90 L 152 120 C 152 120, 100 128, 48 120 Z" fill="#f7ede2" />
+        <path d="M48 90 C 70 96, 130 96, 152 90" fill="none" stroke="var(--secondary)" stroke-width="3"/>
+
+        <!-- Top Layer (Berry) -->
+        <path d="M58 65 C 58 65, 100 72, 142 65 L 142 90 C 142 90, 100 96, 58 90 Z" fill="var(--lilac)" />
+        <path d="M58 65 C 70 70, 130 70, 142 65" fill="none" stroke="#fff8f0" stroke-width="2"/>
+
+        <!-- Candles -->
+        <!-- Center Candle -->
+        <rect x="97" y="35" width="6" height="30" fill="var(--secondary)" rx="2"/>
+        <path d="M100 20 Q105 28 100 35 Q95 28 100 20 Z" fill="var(--primary)" opacity="0.95"/>
+        
+        <!-- Left Candle -->
+        <rect x="72" y="42" width="6" height="23" fill="var(--accent)" rx="2"/>
+        <path d="M75 30 Q80 37 75 42 Q70 37 75 30 Z" fill="var(--secondary)" opacity="0.9"/>
+        
+        <!-- Right Candle -->
+        <rect x="122" y="42" width="6" height="23" fill="var(--accent)" rx="2"/>
+        <path d="M125 30 Q130 37 125 42 Q120 37 125 30 Z" fill="var(--secondary)" opacity="0.9"/>
+      </svg>
+    </div>
+
+    <!-- Status Loading Message -->
+    <h1 class="loading-text">Baking the Birthday Magic...</h1>
+    <p class="loading-subtext" id="status-desc">Pre-heating ovens and whipping the frosting...</p>
+
+    <!-- Progress Loader Bar -->
+    <div class="progress-container">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    
+    <div class="progress-counter" id="progress-counter">0%</div>
+  </div>
+
+  <!-- Shared Javascript -->
+  <script src="shared.js"></script>
+  <script>
+    const progressFill = document.getElementById("progress-fill");
+    const progressCounter = document.getElementById("progress-counter");
+    const statusDesc = document.getElementById("status-desc");
+
+    const recipientName = activeConfig ? activeConfig.name : "hannu";
+    document.querySelector(".loading-text").textContent = `Baking Surprise for ${recipientName}! 🎂`;
+
+    const statusUpdates = [
+      { pct: 0, text: "Pre-heating ovens & preparing frosting..." },
+      { pct: 15, text: "Measuring ingredients with lots of love..." },
+      { pct: 30, text: "Stirring the birthday cake batter..." },
+      { pct: 45, text: "Pouring the mixture into layers..." },
+      { pct: 60, text: "Baking the sponge cake layers..." },
+      { pct: 75, text: "Spreading sweet cream & strawberry syrup..." },
+      { pct: 90, text: "Lighting the virtual candles..." },
+      { pct: 98, text: "Ready to blow out!" }
+    ];
+
+    let currentProgress = 0;
+    const duration = 3500; // 3.5 seconds
+    const intervalTime = 40; // update speed
+    const increment = (100 / (duration / intervalTime));
+
+    const loadingTimer = setInterval(() => {
+      currentProgress += increment;
+      if (currentProgress >= 100) {
+        currentProgress = 100;
+        clearInterval(loadingTimer);
+        
+        // Final chime sound
+        playSuccessChime();
+
+        // Redirect
+        setTimeout(() => {
+          window.location.href = "celebration.html";
+        }, 300);
+      }
+
+      const roundedProgress = Math.floor(currentProgress);
+      progressFill.style.width = roundedProgress + "%";
+      progressCounter.textContent = roundedProgress + "%";
+
+      // Update description text based on percentage
+      const matchingStatus = statusUpdates.reduce((prev, curr) => {
+        return (roundedProgress >= curr.pct) ? curr : prev;
+      }, statusUpdates[0]);
+      
+      statusDesc.textContent = matchingStatus.text;
+    }, intervalTime);
+  </script>
+</body>
+</html>

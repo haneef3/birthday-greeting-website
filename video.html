@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Video Message 🎥</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-trail"></div>
+
+  <!-- Background Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ═══ CUSTOMIZER DRAWER ══════════════════════ -->
+  <div class="drawer" id="customizer-drawer">
+    <div class="drawer-header">
+      <h3 class="drawer-title">Personalize Site ✨</h3>
+      <button class="drawer-close" id="drawer-close">×</button>
+    </div>
+    <div class="drawer-content">
+      <div class="form-group">
+        <label class="form-label">Color Theme</label>
+        <div class="theme-options">
+          <button class="theme-opt theme-rose" data-theme-val="rose">Rose</button>
+          <button class="theme-opt theme-cosmic" data-theme-val="cosmic">Cosmic</button>
+          <button class="theme-opt theme-emerald" data-theme-val="emerald">Emerald</button>
+          <button class="theme-opt theme-retro" data-theme-val="retro">Retro</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label" for="input-video">Upload Video Message 🎥</label>
+        <input type="file" id="input-video" class="form-control" accept="video/*">
+        <p style="font-size:0.7rem;color:rgba(255,248,240,0.4);margin-top:2px;">Select an MP4/WebM video file to replace the current birthday video.</p>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="drawer-btn save" id="btn-save-drawer">Save Changes ✨</button>
+      <button class="drawer-btn reset" id="btn-reset-drawer">Reset to Default</button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="music-section" style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1rem;">
+    <div class="hero-glow glow-1"></div>
+    <div class="hero-glow glow-3"></div>
+
+    <p class="section-label reveal">Secret Message</p>
+    <h2 class="section-title reveal" style="margin-bottom: 0.5rem;" id="greeting-title">Special Video for HANNU! 💖</h2>
+    <div class="divider reveal"></div>
+    <p class="reveal" style="color: rgba(255,248,240,0.6); max-width: 500px; margin: 0 auto 2.5rem; text-align: center;">
+      Here is a special birthday video message. Make sure your volume is up! 🔊
+    </p>
+
+    <!-- Glassmorphic Video Player Card -->
+    <div class="music-player reveal" style="max-width: 680px; width: 100%; padding: 2rem; border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.45); z-index: 10;">
+      <div style="width: 100%; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid var(--border-glass); box-shadow: var(--shadow-glow);">
+        <video id="bday-video" style="width: 100%; display: block;" controls playsinline loop>
+          <source src="11.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <p style="font-size: 0.85rem; color: rgba(255, 248, 240, 0.55); text-align: center; margin-top: 1.2rem;" id="video-footer">
+        Press play to watch the sweet memory.
+      </p>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="display: flex; gap: 1rem; margin-top: 4rem; width: 100%; max-width: 500px; justify-content: center; position: relative; z-index: 10;">
+      <a href="gallery.html" class="btn-secondary" style="margin: 0; flex: 1;">
+        <span>⏮</span> Back to Memories
+      </a>
+      <a href="index.html" class="btn-primary" style="margin: 0; flex: 1;">
+        <span>🔒</span> Unlock Start
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-heart">🎂</div>
+    <p class="footer-text">Made with love, just for you.</p>
+  </footer>
+
+  <!-- Shared Javascript Library -->
+  <script src="shared.js"></script>
+  <script>
+    const greetingTitle = document.getElementById("greeting-title");
+    const themeOpts = document.querySelectorAll(".theme-opt");
+    const videoElement = document.getElementById("bday-video");
+    const videoSource = videoElement.querySelector("source");
+    const videoFooter = document.getElementById("video-footer");
+
+    // Ensure the birthday video plays with sound and starts at full volume.
+    videoElement.muted = false;
+    videoElement.volume = 1.0;
+
+    function setVideoSource(src) {
+      if (videoSource) {
+        videoSource.src = src;
+      }
+      videoElement.src = src;
+      videoElement.load();
+    }
+
+    function updatePageContent() {
+      // Set header greeting
+      greetingTitle.innerHTML = `Special Video for <em>${activeConfig.name.toUpperCase()}</em>! 💖`;
+
+      // Theme toggle indicators
+      themeOpts.forEach(opt => {
+        opt.classList.toggle("selected", opt.dataset.themeVal === activeConfig.theme);
+      });
+
+      // Load Video source
+      if (activeConfig.videoData) {
+        setVideoSource(activeConfig.videoData);
+      } else {
+        setVideoSource("11.mp4");
+      }
+    }
+
+    // Handle video uploading
+    document.getElementById("input-video").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const objectURL = URL.createObjectURL(file);
+      setVideoSource(objectURL);
+      videoFooter.textContent = "New video loaded — press play to watch it.";
+      
+      // Save data URL to activeConfig if it is small enough (under 3.5MB) to avoid QuotaExceededError
+      if (file.size < 3.5 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          activeConfig.videoData = evt.target.result;
+          saveConfig();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Too large for localstorage, clear previously stored data to avoid conflicts
+        delete activeConfig.videoData;
+        saveConfig();
+        alert("Video loaded successfully! Note: Since this file is large, it will play now in this session, but won't be saved permanently to browser storage (max storage limit is 5MB). To make a video permanent, place an MP4 named '11.mp4' in your folder!");
+      }
+      playSuccessChime();
+    });
+
+    videoElement.addEventListener("error", () => {
+      videoFooter.textContent = "Video failed to load. Please check that 11.mp4 exists in the same folder or upload a compatible MP4.";
+      alert("Unable to load the video file. Try refreshing the page or using a valid MP4 file named 11.mp4.");
+    });
+
+    videoElement.addEventListener("loadeddata", () => {
+      videoFooter.textContent = "Press play to watch the sweet memory.";
+    });
+
+    // ─── LIVE DRAWER LOGIC ───
+    const drawer = document.getElementById("customizer-drawer");
+    
+    document.getElementById("drawer-close").addEventListener("click", () => {
+      drawer.classList.remove("open");
+    });
+
+    themeOpts.forEach(opt => {
+      opt.addEventListener("click", () => {
+        themeOpts.forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+        activeConfig.theme = opt.dataset.themeVal;
+        applyTheme(activeConfig.theme);
+      });
+    });
+
+    document.getElementById("btn-save-drawer").addEventListener("click", () => {
+      saveConfig();
+      updatePageContent();
+      drawer.classList.remove("open");
+      playSuccessChime();
+      alert("Settings saved successfully!");
+    });
+
+    document.getElementById("btn-reset-drawer").addEventListener("click", () => {
+      if (confirm("Reset layout configs to default?")) {
+        localStorage.removeItem('bday_config');
+        activeConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+        applyTheme(activeConfig.theme);
+        
+        // Reset video element source
+        setVideoSource("11.mp4");
+        
+        updatePageContent();
+        drawer.classList.remove("open");
+        playSuccessChime();
+      }
+    });
+
+    // Scroll Reveal trigger
+    const revEls = document.querySelectorAll(".reveal");
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: .1 });
+    revEls.forEach(el => obs.observe(el));
+
+    // Page Load setup
+    updatePageContent();
+  </script>
+</body>
+</html>
